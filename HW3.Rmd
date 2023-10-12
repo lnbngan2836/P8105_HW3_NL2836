@@ -49,6 +49,7 @@ aisle_plot =
 ```
 
 Make a plot to show the number of items ordered in each aisle.
+
 ```{r, dpi = 300}
 aisle_plot %>% 
   ggplot(aes(x= reorder(aisle, frequency), y = frequency)) + 
@@ -56,11 +57,11 @@ aisle_plot %>%
   coord_flip() +
   labs(x = "Aisle name", y = "Number of Items Ordered") +
   theme_minimal() +
-  theme(axis.text.y = element_text(size = 7))
-
+  theme(axis.text.y = element_text(size = 7)) +
+  ggtitle("Number of Items Ordered by Aisle")
 ```
 
-
+##### 
 
 
 
