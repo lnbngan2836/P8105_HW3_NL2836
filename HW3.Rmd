@@ -14,6 +14,8 @@ data("instacart")
 
 # Problem 1
 
+### How many aisles are there, and which aisles are the most items ordered from?
+
 Count the number of distinct aisles.
 ```{r aisle count}
 aisle_count = 
