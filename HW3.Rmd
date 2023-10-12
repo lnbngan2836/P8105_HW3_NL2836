@@ -32,6 +32,6 @@ aisle_most_order =
   first()
 ```
 
-There are `r aisle_count` different aisles. The aisle from with most items are ordered is `r aisle_most_order`.
+There are `r aisle_count` different aisles. The aisle from which most items are ordered is `r aisle_most_order`.
 
 
