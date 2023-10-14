@@ -9,6 +9,7 @@ Load the necessary libraries and datasets.
 ```{r setup, message = FALSE}
 library(tidyverse)
 library(p8105.datasets)
+library(gt)
 data("instacart")
 ```
 
@@ -28,8 +29,8 @@ Arrange the `aisle` variable according to observation frequencies and output the
 aisle_most_order =
   instacart %>% 
   group_by(aisle) %>% 
-  summarize(frequency = n()) %>% 
-  arrange(desc(frequency)) %>% 
+  summarize(freq_order = n()) %>% 
+  arrange(desc(freq_order)) %>% 
   pull(aisle) %>% 
   first()
 ```
@@ -44,15 +45,15 @@ Filter aisles to those with more than 10000 and arrange.
 aisle_plot =
   instacart %>% 
   group_by(aisle) %>% 
-  summarize(frequency = n()) %>%
-  filter(frequency > 10000)
+  summarize(freq_aisle= n()) %>%
+  filter(freq_aisle > 10000)
 ```
 
 Make a plot to show the number of items ordered in each aisle.
 
 ```{r, dpi = 300}
 aisle_plot %>% 
-  ggplot(aes(x= reorder(aisle, frequency), y = frequency)) + 
+  ggplot(aes(x= reorder(aisle, freq_aisle), y = freq_aisle)) + 
   geom_bar(stat = "identity", fill = "skyblue") + 
   coord_flip() +
   labs(x = "Aisle name", y = "Number of Items Ordered") +
@@ -61,8 +62,33 @@ aisle_plot %>%
   ggtitle("Number of Items Ordered by Aisle")
 ```
 
-##### 
+##### Make a table showing the three most popular items in each of the aisles “baking ingredients”, “dog food care”, and “packaged vegetables fruits”. Include the number of times each item is ordered in your table.
 
+Get the 3 most popular items of each aisle.
+
+```{r popular items}
+popular_items =
+  instacart %>% 
+  filter(aisle %in% c("baking ingredients", "dog food care", "packaged vegetables fruits")) %>% 
+  group_by(aisle, product_name) %>% 
+  summarize(freq_pop=n(),.groups = 'drop') %>% 
+  arrange(aisle, desc(freq_pop)) %>% 
+  group_by(aisle)%>%
+  top_n(3, wt = freq_pop)
+```
+
+Make a table. 
+
+```{r popular items table, warning = FALSE}
+popular_items %>%
+  gt() %>%
+  cols_label(
+    aisle = "Aisle",
+    product_name = "Product name",
+    freq_pop = "Times ordered") %>% 
+  tab_header(title = "Top 3 Popular Items by Aisle") %>%
+  fmt_number(columns = vars(freq_pop), decimals = 0) 
+```
 
 
 
