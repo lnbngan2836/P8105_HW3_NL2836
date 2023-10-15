@@ -170,12 +170,27 @@ In 2010, the states that were observed at 7 or more locations are `r df2010`.
 
 ##### Construct a dataset that is limited to Excellent responses, and contains, year, state, and a variable that averages the data_value across locations within a state. Make a “spaghetti” plot of this average value over time within a state (that is, make a plot showing a line for each state across years – the geom_line geometry and group aesthetic will help).
 
-```{r excellent df}
+Make the dataframe.
+
+```{r make excellent df}
 excellent =
   p2_clean %>% 
   filter(response == "Excellent") %>% 
   select(year, location_abbr, data_value) %>% 
   group_by(year, location_abbr) %>% 
-  
+  summarize(mean_value = round(mean(data_value, na.rm = TRUE), 2),.groups = 'drop')
 ```
+
+Plot the average value.
+
+```{r}
+ggplot(excellent, aes(x = year, y = mean_value, group = location_abbr, color = location_abbr)) +
+  geom_line() +
+  labs(
+    x = "Year",
+    y = "Average Value",
+    title = "Spaghetti Plot of Average Value Over Time by State"
+  )
+```
+
 
