@@ -10,6 +10,7 @@ Load the necessary libraries and datasets.
 library(tidyverse)
 library(p8105.datasets)
 library(gt)
+library(patchwork)
 data("instacart")
 data("brfss_smart2010")
 ```
@@ -183,7 +184,7 @@ excellent =
 
 Plot the average value.
 
-```{r}
+```{r spaghetti}
 ggplot(excellent, aes(x = year, y = mean_value, group = location_abbr, color = location_abbr)) +
   geom_line() +
   labs(
@@ -194,4 +195,30 @@ ggplot(excellent, aes(x = year, y = mean_value, group = location_abbr, color = l
 ```
 
 The plot shows the trend of the average data value of each states from 2002 to 2010.WV average data value fluctuates more than others', but overall stay the lowest across the states over the year. DC average data value overall stay the highest acrros the states over the year.
+
+##### Make a two-panel plot showing, for the years 2006, and 2010, distribution of data_value for responses (“Poor” to “Excellent”) among locations in NY State.
+
+```{r plot 2006+2010}
+
+plot_2006 = 
+  p2_clean %>% 
+  filter(location_abbr=="NY",year==2006)|>
+  ggplot(aes(x =location_desc , y = data_value,fill=response)) + 
+  geom_bar(position="dodge",stat="identity") +  
+  labs(title = "Average data value by responses in New York State (2006)") + 
+  theme(plot.title = element_text(size = 10), axis.text.x = element_text(angle = 20, hjust = 1),legend.position = "none")
+
+ plot_2010 =
+  p2_clean %>%  
+  filter(location_abbr == "NY", year == "2010") %>% 
+  ggplot(aes(x = location_desc, y = data_value, fill = response)) +
+  geom_bar(position = "dodge", stat = "identity") +
+  labs(title = " Average data value by responses in New York State (2010)") +
+  theme(plot.title = element_text(size = 10), axis.text.x = element_text(angle = 20, hjust = 1)) 
+
+options(repr.plot.width = 10, repr.plot.height = 4)
+ 
+ 
+plot_2006 + plot_2010
+```
 
