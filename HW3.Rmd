@@ -193,4 +193,5 @@ ggplot(excellent, aes(x = year, y = mean_value, group = location_abbr, color = l
   )
 ```
 
+The plot shows the trend of the average data value of each states from 2002 to 2010.WV average data value fluctuates more than others', but overall stay the lowest across the states over the year. DC average data value overall stay the highest acrros the states over the year.
 
