@@ -222,3 +222,22 @@ options(repr.plot.width = 10, repr.plot.height = 4)
 plot_2006 + plot_2010
 ```
 
+The two-panel plot displays the data values in the years 2006 and 2010 across various locations in New York (NY). Notably, some counties, such as the Bronx, does not have any data reported for the year 2006. "Very good" and "Good" remain as the highest data values overall. 
+
+# Problem 3
+
+```{r load accel, message = FALSE}
+accel <- read_csv("./nhanes_accel.csv") %>%
+  janitor::clean_names() %>% 
+  mutate(seqn = as.integer(seqn))
+```
+
+```{r load demographic, message = FALSE}
+dem <- read_csv("./nhanes_covar.csv", skip = 4) %>%
+  janitor::clean_names()%>%
+  na.omit() %>%
+  filter(age >= 21) %>%
+  mutate(seqn = as.integer(seqn), sex=as.factor(sex), education = as.factor(education))
+```
+
+
