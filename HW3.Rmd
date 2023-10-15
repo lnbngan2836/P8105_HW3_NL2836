@@ -11,6 +11,7 @@ library(tidyverse)
 library(p8105.datasets)
 library(gt)
 data("instacart")
+data("brfss_smart2010")
 ```
 
 # Problem 1
@@ -121,7 +122,19 @@ time_order %>%
   fmt_number(columns = vars(product_name), decimals = 0) 
 ```
 
+# Problem 2
 
+##### Data cleaning
+
+```{r brfss cleaning}
+brfss_smart2010 %>% 
+  janitor::clean_names() %>% 
+  rename(
+    location_abbr = locationabbr,
+    location_desc = locationdesc,
+    resp_id = respid,
+  ) 
+```
 
 
 
