@@ -90,6 +90,39 @@ popular_items %>%
   fmt_number(columns = vars(freq_pop), decimals = 0) 
 ```
 
+##### Make a table showing the mean hour of the day at which Pink Lady Apples and Coffee Ice Cream are ordered on each day of the week; format this table for human readers (i.e. produce a 2 x 7 table).
+
+```{r order time}
+time_order =
+  instacart %>% 
+  filter(product_name %in% c("Pink Lady Apples", "Coffee Ice Cream")) %>%
+  group_by(product_name, order_dow) %>% 
+  summarize(mean_hour = round(mean(order_hour_of_day, na.rm = TRUE),2), .groups = 'drop') %>% 
+ pivot_wider(
+    names_from = order_dow,
+    values_from = mean_hour) %>% 
+ rename(
+   Monday = "0", 
+   Tuesday = "1", 
+   Wednesday = "2", 
+   Thursday = "3", 
+   Friday = "4", 
+   Saturday = "5", 
+   Sunday = "6"
+ )
+```
+
+```{r order time table, warning = FALSE}
+time_order %>%
+  gt() %>%
+  cols_label(
+    product_name = "Product name") %>% 
+  tab_header(title = "Mean time order by week date") %>%
+  fmt_number(columns = vars(product_name), decimals = 0) 
+```
+
+
+
 
 
 
