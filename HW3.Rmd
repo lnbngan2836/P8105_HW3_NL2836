@@ -254,6 +254,7 @@ joined =
         )
 ```
 
+
 This merged dataset has 228 rows and 1445 columns, including each participant's `sex`, `age`, `bmi`, `education`, and their MIMS recorded every minute throughout the day.
 
 ```{r}
@@ -261,6 +262,7 @@ edu_sex = table(joined$sex, joined$education)
 
 knitr::kable(edu_sex, caption = "Male and Female Count by Education Level")
 ```
+
 In general, there are a higher percentage of people who have the education level of `More than high school`. The distribution of Male and Female in each Education Level category are roughly the same, except for `High school equivalent` where we observe a slightly higher percentage of male compared to female.
 
 ```{r}
@@ -280,6 +282,7 @@ ggplot(
        fill = "Sex") +
     theme_minimal()
 ```
+
 Among male, the average age tend to decreases among people who completed higher level of education. Among female, people whose education level is "Less than high school" and "High school equivalent" are roughly the same, but we observe a significant decrease in the average age among female whose education level is "More than high school".
 
 ```{r plot, message = FALSE}
@@ -326,6 +329,7 @@ ggplot(joined_min,
        y = "Activity",
        color = "Sex") 
 ```
+
 Across 3 education levels, people generally started their physical daily activities at around 5 am to 6 am. There does not seem to have any significant difference in the amount of hourly activity through out the day among male and female whose level of education are `less than high school` and `high school equivalent`.
 
 However, among people whose education level is `more than high school`, we can see that females tend to have a higher amount of activity in the morning, specifically from 6 am to 10 am. On the other hand, males have a significantly higher amount of activities from 7 pm to 10 pm. 
