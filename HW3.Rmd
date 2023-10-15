@@ -82,14 +82,7 @@ popular_items =
 Make a table. 
 
 ```{r popular items table, warning = FALSE}
-popular_items %>%
-  gt() %>%
-  cols_label(
-    aisle = "Aisle",
-    product_name = "Product name",
-    freq_pop = "Times ordered") %>% 
-  tab_header(title = "Top 3 Popular Items by Aisle") %>%
-  fmt_number(columns = vars(freq_pop), decimals = 0) 
+knitr::kable(popular_items,caption = "Top 3 Popular Items by Aisle")
 ```
 
 ##### Make a table showing the mean hour of the day at which Pink Lady Apples and Coffee Ice Cream are ordered on each day of the week; format this table for human readers (i.e. produce a 2 x 7 table).
@@ -115,12 +108,7 @@ time_order =
 ```
 
 ```{r order time table, warning = FALSE}
-time_order %>%
-  gt() %>%
-  cols_label(
-    product_name = "Product name") %>% 
-  tab_header(title = "Mean time order by week date") %>%
-  fmt_number(columns = vars(product_name), decimals = 0) 
+knitr::kable(time_order, caption = "Mean time order by week date", digits = 2)
 ```
 
 # Problem 2
