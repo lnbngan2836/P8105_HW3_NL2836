@@ -240,4 +240,92 @@ dem <- read_csv("./nhanes_covar.csv", skip = 4) %>%
   mutate(seqn = as.integer(seqn), sex=as.factor(sex), education = as.factor(education))
 ```
 
+```{r merge}
+joined <- inner_join(accel, dem, by = "seqn") 
 
+joined =
+  joined %>%
+  select(seqn, sex, age, bmi, education, everything()) %>% 
+  mutate(
+    sex = if_else(sex == "1", "male", "female"), 
+    education = if_else(education == "1", "Less than high school", 
+                if_else(education == "2", "High school equivalent", 
+                if_else(education =="3", "More than high school", NA)))
+        )
+```
+
+This merged dataset has 228 rows and 1445 columns, including each participant's `sex`, `age`, `bmi`, `education`, and their MIMS recorded every minute throughout the day.
+
+```{r}
+edu_sex = table(joined$sex, joined$education)
+
+knitr::kable(edu_sex, caption = "Male and Female Count by Education Level")
+```
+In general, there are a higher percentage of people who have the education level of `More than high school`. The distribution of Male and Female in each Education Level category are roughly the same, except for `High school equivalent` where we observe a slightly higher percentage of male compared to female.
+
+```{r}
+ggplot(
+  joined, 
+  aes(x = factor(education, 
+                 levels= c("Less than high school", 
+                           "High school equivalent", 
+                           "More than high school"), 
+                 ordered = TRUE), 
+      y = age, 
+      fill = sex)) +
+  geom_boxplot() +
+  labs(title = "Male and Female Age Distribution by Education Level",
+       x = "Education Level",
+       y = "Age",
+       fill = "Sex") +
+    theme_minimal()
+```
+Among male, the average age tend to decreases among people who completed higher level of education. Among female, people whose education level is "Less than high school" and "High school equivalent" are roughly the same, but we observe a significant decrease in the average age among female whose education level is "More than high school".
+
+```{r plot, message = FALSE}
+joined %>%
+  mutate(rowsums = select(., -c(1:5)) %>% 
+           rowSums(na.rm = TRUE))%>%
+  ggplot(aes(x = age, y = rowsums, color = sex)) +
+  geom_point(aes(shape = sex), alpha = 0.5) + 
+  geom_smooth(method = "lm", se = FALSE) + 
+  facet_wrap(~ factor(education, levels= c("Less than high school", 
+                                           "High school equivalent", 
+                                           "More than high school"), 
+                      ordered = TRUE)) + 
+  labs(title = "Total Activity among Male and Female by Age and Education Level",
+       x = "Age",
+       y = "Total Activity",
+       color = "Sex",
+       shape = "Sex") +
+  theme_minimal()
+```
+
+The downward trend (slope) of daily activity as age increases is most obvious (steepest) among people who fall under the lowest education level (`less than high school`). Across three level of education, daily activity all witnesses a downward trend, albeit the decrease in daily activity as age increases is less severe among higher education level. 
+
+```{r, message = FALSE}
+joined_min <- joined %>%
+  pivot_longer(min1:min1440, 
+               names_prefix = "min",
+               names_to = "minute", 
+               values_to = "activity") %>%
+  mutate(minute = as.integer(minute))
+
+ggplot(joined_min, 
+       aes(x = minute, y = activity, color = sex)) +
+  geom_line(alpha = 0.5) +
+  geom_smooth(se = FALSE) +
+  facet_wrap(~ factor(education, 
+                      levels= c("Less than high school", 
+                                "High school equivalent", 
+                                "More than high school"), 
+                      ordered = TRUE), 
+             ncol = 1) +
+  scale_x_continuous(name = "Hour", breaks = seq(0, 1440, 60), labels = 0:24) +
+  labs(title = "Daily Activity Time by Education Level",
+       y = "Activity",
+       color = "Sex") 
+```
+Across 3 education levels, people generally started their physical daily activities at around 5 am to 6 am. There does not seem to have any significant difference in the amount of hourly activity through out the day among male and female whose level of education are `less than high school` and `high school equivalent`.
+
+However, among people whose education level is `more than high school`, we can see that females tend to have a higher amount of activity in the morning, specifically from 6 am to 10 am. On the other hand, males have a significantly higher amount of activities from 7 pm to 10 pm. 
